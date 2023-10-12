@@ -26,7 +26,7 @@ module External
         
         def get_api(path, parameters = {})
           begin
-            response = connection.get(path, parameters.merge(appid: ENV.fetch("OPENWEATHER_API_KEY")))
+            response = connection.get(path, parameters)
         
             if response.success?
               response.body
@@ -36,8 +36,6 @@ module External
           rescue Faraday::Error => e
             Rails.logger.error "An error occurred: #{e.message}"
             raise
-          ensure
-            connection.close
           end
         end
     end
