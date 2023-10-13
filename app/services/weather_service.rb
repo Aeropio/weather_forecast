@@ -11,13 +11,9 @@ class WeatherService
   def execute(post_code, country_code)
     # sample data received from geo api to get lat and long
     # {"zip":"500004","name":"Hyderabad","lat":17.3872,"lon":78.4621,"country":"IN"}
-    begin
       coordinates_api_response = get_coordinates(post_code, country_code)
       response_body = get_weather(coordinates_api_response["lat"], coordinates_api_response["lon"])
       weather_data(response_body)
-    rescue StandardError => e
-      Rails.logger.error "Error: #{e.message}"
-    end
   end
   
   private
