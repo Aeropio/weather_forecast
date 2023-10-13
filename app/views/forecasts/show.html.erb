@@ -1,0 +1,29 @@
+<h1>Weather Forecast</h1>
+
+<%= form_tag('/forecasts/show', method: 'get') do %>
+  <div>
+    <%= label_tag :zip_code, 'Zip Code' %>
+    <%= text_field_tag :zip_code %>
+  </div>
+
+  <div>
+    <%= label_tag :country_code, 'Country' %>
+    <%= select_tag :country_code, options_for_select(Rails.cache.read('countries_data'), 'IN') %>
+  </div>
+
+  <%= submit_tag 'Get Weather Data' %>
+<% end %>
+
+<div id="weather_forecast_result">
+  <% if defined?(@weather) %>
+    <ul>
+      <li>Temperature: <%= @weather.temperature %> ℃</li>
+      <li>Temperature Minimum: <%= @weather.temperature_min %> ℃</li>
+      <li>Temperature Maximum: <%= @weather.temperature_max %> ℃</li>
+      <li>Humidity: <%= @weather.humidity %>%</li>
+      <li>Pressure: <%= @weather.pressure %> millibars</li>
+      <li>Description: <%= @weather.description %></li>
+      <li>Is this weather result from cache? <%= @is_weather_cached %></li>
+    </ul>
+  <% end %>
+</div>

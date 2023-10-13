@@ -13,7 +13,8 @@ class WeatherService
     # {"zip":"500004","name":"Hyderabad","lat":17.3872,"lon":78.4621,"country":"IN"}
     begin
       coordinates_api_response = get_coordinates(post_code, country_code)
-      weather_api_response = get_weather(coordinates_api_response["lat"], coordinates_api_response["lon"])
+      response_body = get_weather(coordinates_api_response["lat"], coordinates_api_response["lon"])
+      weather_data(response_body)
     rescue StandardError => e
       Rails.logger.error "Error: #{e.message}"
     end
@@ -22,13 +23,13 @@ class WeatherService
   private
   
   def  get_weather(latitude, longitude, units = "metric")
-    response = @connection.get_request(FETCH_WEATHER_PATH, {
-                  appid: ENV.fetch("OPENWEATHER_API_KEY"),
-                  lat: latitude,
-                  lon: longitude,
-                  units: units,
-                })
-    response.body
+    @connection.get_request(FETCH_WEATHER_PATH, {
+      appid: ENV.fetch("OPENWEATHER_API_KEY"),
+      lat: latitude,
+      lon: longitude,
+      units: units,
+    })
+   
   end
   
   def get_coordinates(post_code, country_code)
@@ -42,5 +43,16 @@ class WeatherService
   
   def initialize_connection
     External::Client::ApiCaller.new(WEATHER_BASE_URL)
+  end
+  
+  def weather_data(response_body)
+    weather = OpenStruct.new
+    weather.temperature = response_body["main"]["temp"]
+    weather.temperature_min = response_body["main"]["temp_min"]
+    weather.temperature_max = response_body["main"]["temp_max"]
+    weather.humidity = response_body["main"]["humidity"]
+    weather.pressure = response_body["main"]["pressure"]
+    weather.description = response_body["weather"][0]["description"]
+    weather
   end
 end
