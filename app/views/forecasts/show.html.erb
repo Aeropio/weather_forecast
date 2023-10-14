@@ -7,8 +7,8 @@
   </div>
 
   <div>
-    <%= label_tag :country_code, 'Country' %>
-    <%= select_tag :country_code, options_for_select(Rails.cache.read('countries_data'), 'IN') %>
+    <%= label_tag :country, 'Country' %>
+    <%= select_tag :country, options_for_select(Rails.cache.read('countries_data').keys, 'India') %>
   </div>
 
   <%= submit_tag 'Get Weather Data' %>
@@ -39,12 +39,12 @@
 
 <% if flash[:notice] %>
   <div class="flash-notice">
-    <%= flash[:notice] %>
+    <%= flash[:notice].html_safe %>
   </div>
 <% end %>
 
 <% if flash[:alert] %>
   <div class="flash-alert">
-    <%= flash[:alert] %>
+    <%= flash[:alert].html_safe %>
   </div>
 <% end %>

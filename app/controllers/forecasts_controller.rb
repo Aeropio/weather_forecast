@@ -2,9 +2,10 @@ class ForecastsController < ApplicationController
   rescue_from Faraday::Error, with: :handle_faraday_error
 
   def show
-    if params[:zip_code].present? && params[:country_code].present?
-      fetch_weather_data(params[:zip_code], params[:country_code])
-      flash[:notice] = weather_flash_message if @weather
+    if params[:zip_code].present? && params[:country].present?
+      fetch_weather_data(params[:zip_code], params[:country])
+      flash[:notice] = weather_flash_message(params[:zip_code], params[:country]) if @weather
+      redirect_to root_path
     end
 
     respond_to do |format|
@@ -19,9 +20,11 @@ class ForecastsController < ApplicationController
     flash[:alert] = "Error fetching weather data: #{e.message}"
     redirect_to root_path
   end
-
-  def weather_flash_message
+  
+   #(zip_code, country)
+  def weather_flash_message(zip_code, country)
     <<~MESSAGE
+      <br> The weather in #{country} with #{zip_code} post code is below: <br> <br> <br>
       Temperature: #{@weather.temperature} ℃
       Temperature Minimum: #{@weather.temperature_min} ℃
       Temperature Maximum: #{@weather.temperature_max} ℃
@@ -32,7 +35,8 @@ class ForecastsController < ApplicationController
     MESSAGE
   end
 
-  def fetch_weather_data(zip_code, country_code)
+  def fetch_weather_data(zip_code, country)
+    country_code = Rails.cache.read('countries_data')[country]
     @weather_cache_key = "#{zip_code},#{country_code}"
     @is_weather_cached = Rails.cache.exist?(@weather_cache_key)
 
