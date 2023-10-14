@@ -14,16 +14,31 @@
   <%= submit_tag 'Get Weather Data' %>
 <% end %>
 
-<div id="weather_forecast_result">
-  <% if defined?(@weather) %>
-    <ul>
-      <li>Temperature: <%= @weather.temperature %> ℃</li>
-      <li>Temperature Minimum: <%= @weather.temperature_min %> ℃</li>
-      <li>Temperature Maximum: <%= @weather.temperature_max %> ℃</li>
-      <li>Humidity: <%= @weather.humidity %>%</li>
-      <li>Pressure: <%= @weather.pressure %> millibars</li>
-      <li>Description: <%= @weather.description %></li>
-      <li>Is this weather result from cache? <%= @is_weather_cached %></li>
-    </ul>
-  <% end %>
-</div>
+<style>
+  .flash-notice, .flash-alert {
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+
+  .flash-notice {
+    color: green;
+  }
+
+  .flash-alert {
+    color: red;
+  }
+</style>
+
+<% if flash[:notice] %>
+  <div class="flash-notice">
+    <%= flash[:notice] %>
+  </div>
+<% end %>
+
+<% if flash[:alert] %>
+  <div class="flash-alert">
+    <%= flash[:alert] %>
+  </div>
+<% end %>
