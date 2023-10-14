@@ -2,9 +2,9 @@ class ForecastsController < ApplicationController
   rescue_from Faraday::Error, with: :handle_faraday_error
 
   def show
-    if params[:zip_code].present? && params[:country].present?
-      fetch_weather_data(params[:zip_code], params[:country])
-      flash[:notice] = weather_flash_message(params[:zip_code], params[:country]) if @weather
+    if valid_params?
+      @weather = fetch_weather_data
+      flash[:notice] = weather_flash_message if @weather
       redirect_to root_path
     end
 
@@ -20,11 +20,24 @@ class ForecastsController < ApplicationController
     flash[:alert] = "Error fetching weather data: #{e.message}"
     redirect_to root_path
   end
-  
-   #(zip_code, country)
-  def weather_flash_message(zip_code, country)
+
+  def valid_params?
+    params[:zip_code].present? && params[:country].present?
+  end
+
+  def fetch_weather_data
+    country_code = get_country_code
+    weather_cache_key = "#{params[:zip_code]},#{country_code}"
+    @is_weather_cached = Rails.cache.exist?(weather_cache_key)
+
+    Rails.cache.fetch(weather_cache_key, expires_in: 30.minutes) do
+      weather_service.execute(params[:zip_code], country_code)
+    end
+  end
+
+  def weather_flash_message
     <<~MESSAGE
-      <br> The weather in #{country} with #{zip_code} post code is below: <br> <br> <br>
+      <br> The weather in #{params[:country]} with #{params[:zip_code]} post code is below: <br> <br> <br>
       Temperature: #{@weather.temperature} ℃
       Temperature Minimum: #{@weather.temperature_min} ℃
       Temperature Maximum: #{@weather.temperature_max} ℃
@@ -35,14 +48,11 @@ class ForecastsController < ApplicationController
     MESSAGE
   end
 
-  def fetch_weather_data(zip_code, country)
-    country_code = Rails.cache.read('countries_data')[country]
-    @weather_cache_key = "#{zip_code},#{country_code}"
-    @is_weather_cached = Rails.cache.exist?(@weather_cache_key)
+  def get_country_code
+    Rails.cache.read('countries_data').fetch(params[:country])
+  end
 
-    @weather = Rails.cache.fetch(@weather_cache_key, expires_in: 30.minutes) do
-      weather = WeatherService.new.execute(zip_code, country_code)
-      weather if weather.is_a?(OpenStruct) # Only cache if it's a Weather object
-    end
+  def weather_service
+    @weather_service ||= WeatherService.new
   end
 end
