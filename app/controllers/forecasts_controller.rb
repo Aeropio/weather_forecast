@@ -5,8 +5,6 @@ class ForecastsController < ApplicationController
     if params[:zip_code].present? && params[:country_code].present?
       fetch_weather_data(params[:zip_code], params[:country_code])
       flash[:notice] = weather_flash_message if @weather
-    else
-      render :show
     end
 
     respond_to do |format|
