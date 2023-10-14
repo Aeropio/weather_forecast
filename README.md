@@ -35,10 +35,10 @@ Set the OPENWEATHER_API_KEY environment variable. You can use a .env file for lo
 3. Upon submission of the form, if both the zip code and country code are valid, it will display the temperature results.
 
 ## System dependencies
-* Caching
+# Caching ::
 The application uses Rails caching to store countries data and cache forecast details for 30 minutes for all subsequent requests by zip and country codes.
 
-* How to run the test suite
+# Running test suite
 ```sh
 % bundle exec rspec
 ```
