@@ -1,31 +1,40 @@
-# spec/weather_service_spec.rb
+# spec/services/weather_service_spec.rb
 
 require 'rails_helper'
 
 RSpec.describe WeatherService, type: :service do
-  let(:weather_service) { WeatherService.new }
-
   describe '#execute' do
-    it 'fetches weather data' do
-      # Stub the API calls
-      allow(weather_service).to receive(:get_coordinates).and_return({"lat" => 17.3872, "lon" => 78.4621})
-      allow(weather_service).to receive(:get_weather).and_return("Weather data")
+    let(:service) { WeatherService.new }
 
-      # Execute the method
-      result = weather_service.execute("500004", "IN")
+    before do
+      allow(service).to receive(:get_coordinates).and_return({
+        "lat" => 17.3872,
+        "lon" => 78.4621
+      })
 
-      expect(result).to eq("Weather data")
+      allow(service).to receive(:get_weather).and_return({
+        "main" => {
+          "temp" => 20,
+          "temp_min" => 15,
+          "temp_max" => 25,
+          "humidity" => 50,
+          "pressure" => 1010
+        },
+        "weather" => [{
+          "description" => "Partly cloudy"
+        }]
+      })
     end
 
-    it 'logs errors' do
-      # Stub the API calls to raise an error
-      allow(weather_service).to receive(:get_coordinates).and_raise(StandardError.new("Some error"))
+    it 'fetches weather data for a given post code and country code' do
+      weather = service.execute('500004', 'IN')
 
-      # Capture logs
-      expect(Rails.logger).to receive(:error).with("Error: Some error")
-
-      # Execute the method
-      weather_service.execute("500004", "IN")
+      expect(weather.temperature).to eq(20)
+      expect(weather.temperature_min).to eq(15)
+      expect(weather.temperature_max).to eq(25)
+      expect(weather.humidity).to eq(50)
+      expect(weather.pressure).to eq(1010)
+      expect(weather.description).to eq('Partly cloudy')
     end
   end
 end

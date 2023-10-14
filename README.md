@@ -1,24 +1,44 @@
-# README
+# Weather forecaster app with Ruby on Rails
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## Description
+This is a simple weather app built on Ruby on Rails. 
+It utilizes the OpenWeather API to fetch weather data based on provided zip codes and country codes. 
+The application caches data to improve performance.
 
-Things you may want to cover:
+## Requirements:
+```sh
+Ruby 3.0.6p216
+Rails 6.1.7.6
+```
 
-* Ruby version
+## Getting Started
+1. Clone the repository
+```sh
+% git clone git@github.com:Aeropio/weather_forecast.git
+```
 
-* System dependencies
+2. Install dependencies:
+```sh
+% bundle install
+```
 
-* Configuration
+3. Set up your environment:
+Set the OPENWEATHER_API_KEY environment variable. You can use a .env file for local development.
 
-* Database creation
+## Usage
+1. Start the Rails server:
+```sh
+% rails server
+```
+2. Navigate to the root page in your browser.
+3. Input the zip code and select the country.
+3. Upon submission of the form, if both the zip code and country code are valid, it will display the temperature results.
 
-* Database initialization
+## System dependencies
+* Caching
+The application uses Rails caching to store countries data and cache forecast details for 30 minutes for all subsequent requests by zip and country codes.
 
 * How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+```sh
+% bundle exec rspec
+```

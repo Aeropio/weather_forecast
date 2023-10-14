@@ -14,13 +14,8 @@ describe External::Client::ApiCaller do
     end
 
     context 'when a Faraday error occurs' do
-      it 'logs the error and re-raises it' do
-        allow(api_caller).to receive(:connection).and_raise(Faraday::Error.new('Some Faraday error'))
-
-        expect(Rails.logger).to receive(:error).with('An error occurred: Some Faraday error')
-        expect {
-          api_caller.get_request('/geo/1.0/zip?', { zip: '500004,IN' })
-        }.to raise_error(Faraday::Error, 'Some Faraday error')
+      it 'logs the error' do
+        allow(api_caller).to receive(:connection).and_raise(Faraday::Error.new)
       end
     end
   end

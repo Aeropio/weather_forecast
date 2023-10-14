@@ -14,7 +14,7 @@ module External
               builder.response :raise_error
               # Logs requests and responses.
               # By default, it only logs the request method and URL, and the request/response headers.
-              # builder.response :logger
+              builder.response :logger
             end
         end
         
@@ -26,13 +26,9 @@ module External
         
         def get_api(path, parameters = {})
           response = connection.get(path, parameters)
-      
-          if response.success?
-            response.body
-          else
-            raise StandardError.new("HTTP error: #{response.status}")
-          end
+          response.body
         end
+        
     end
   end
 end

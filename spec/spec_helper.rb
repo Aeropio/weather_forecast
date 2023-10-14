@@ -46,12 +46,13 @@ RSpec.configure do |config|
   # triggering implicit auto-inclusion in groups with matching metadata.
   config.shared_context_metadata_behavior = :apply_to_host_groups
   
-   config.before(:each) do
+  config.before(:each) do
     lat_long_data = {"zip":"500004","name":"Hyderabad","lat":17.3872,"lon":78.4621,"country":"IN"}
     stub_request(:get, "https://api.openweathermap.org/geo/1.0/zip?zip=500004,IN&appid=#{ENV.fetch("OPENWEATHER_API_KEY")}").
     to_return(status: 200, body: lat_long_data.to_json)
+    # Mocking the Rails.cache object
+    Rails.cache = ActiveSupport::Cache::MemoryStore.new
   end
-
 # The settings below are suggested to provide a good initial experience
 # with RSpec, but feel free to customize to your heart's content.
 =begin
