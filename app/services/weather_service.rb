@@ -3,7 +3,7 @@ class WeatherService
   COORDINATES_PATH = "/geo/1.0/zip?"
   FETCH_WEATHER_PATH = "/data/2.5/weather?"
   
-  # TODO singleton, json parse error and api key in credentials file
+  #TODO json parse error and put openweather api key in credentials file
   def initialize
     @connection ||= initialize_connection
   end
@@ -29,6 +29,7 @@ class WeatherService
   end
   
   def get_coordinates(post_code, country_code)
+    # get latitude and longitude for a given zipcode, country
     # zipcode combined with country code eg: "500004,IN"
     zip_country_code = "#{post_code},#{country_code}"
     @connection.get_request(COORDINATES_PATH, {

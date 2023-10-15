@@ -27,6 +27,7 @@ class ForecastsController < ApplicationController
   end
 
   def fetch_weather_data
+    # Fetches the weather data for the given zip code and country code.
     country_code = get_country_code
     weather_cache_key = "#{params[:zip_code]},#{country_code}"
     @is_weather_cached = Rails.cache.exist?(weather_cache_key)

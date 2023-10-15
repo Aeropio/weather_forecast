@@ -19,7 +19,7 @@ module External
         end
         
         def get_request(path, get_parameters)
-            get_api(path, get_parameters)
+          get_api(path, get_parameters)
         end
         
         private
@@ -28,7 +28,6 @@ module External
           response = connection.get(path, parameters)
           response.body
         end
-        
     end
   end
 end
