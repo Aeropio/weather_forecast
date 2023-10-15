@@ -22,7 +22,8 @@ class ForecastsController < ApplicationController
   end
 
   def valid_params?
-    params[:zip_code].present? && params[:country].present?
+    filtered_params = params.permit(:zip_code, :country)
+    filtered_params[:zip_code].present? && filtered_params[:country].present?
   end
 
   def fetch_weather_data
